@@ -7,14 +7,56 @@ def report():
     print(f"{logo[0]} Coffee = {resources['coffee']}g")
     print(f"{logo[3]} Money = ${resources['money']}")
 
+def is_resource_sufficient(order_ingredients): # order_ingredients = MENU[order]
+    """
+    Return if there are enough resources to process the coffee type as boolean
+    is_resources = True -> sufficient resources
+    is_resources = False -> insufficient resources
+    """
+    is_enough = True
+    for item in order_ingredients:
+        if order_ingredients[item] >= resources[item]:
+           print(f"Sorry there ii not enough {item}")
+           is_enough = False
+    return is_enough
+
+def process_coin():
+    """Return the total calculated from the inserted coins"""
+    print("Please insert coins.")
+    total = int(input("How many quarters? "))*0.25
+    total = int(input("How many dime? "))*0.10
+    total = int(input("How many nickels? ")) * 0.05
+    total = int(input("How many penny? "))*0.01
+    return total
+
 
 def brew_coffee(ordered_coffee, MENU):
+    """ Deduct hte required ingredients from the resources """
     resources["water"] -= MENU[ordered_coffee]["ingredients"]["water"]
     resources["milk"] -= MENU[ordered_coffee]["ingredients"]["milk"]
     resources["coffee"] -= MENU[ordered_coffee]["ingredients"]["coffee"]
-    return MENU
+    print(f"“Here is your {order}. Enjoy!”")
 
 
+
+def is_transaction_successful(money_received, drink_cost):
+    """
+    :param money_received:
+    :param drink_cost:
+    :return: True when the payment is accepted or
+              False if the money is insufficient
+    """
+    if money_received >= drink_cost:
+        change = round(money_received - drink_cost, 2)
+        print(f"Here is your change ${change}.")
+        global profit
+        profit += drink_cost
+        return True
+    else:
+        print("Sorry that's not enoght money")
+        return False
+
+profit = 0
 coffee_on = True
 while coffee_on:
     order = input("What would you like? (espresso/latte/cappuccino): ").lower()
@@ -48,7 +90,7 @@ while coffee_on:
                 coffee_on = True
 
             else:
-                print(f"{order} cost is ${MENU[order]['cost']}! Your change is ${total - MENU[order]['cost']}")
+                print(f"{order} cost is ${MENU[order]['cost']}! Your change is ${round(total - MENU[order]['cost'], 2)}")
                 resources["money"] += MENU[order]["cost"]
                 brew_coffee(order, MENU)
                 print(f"“Here is your {order}. Enjoy!”")
